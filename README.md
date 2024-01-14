@@ -1,66 +1,82 @@
-## Foundry
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+# Assigment 2 :- Decentralized Voting System
 
-Foundry consists of:
+1. **Build:**
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+   ```bash
+   forge build
+   ```
 
-## Documentation
+2. **Test:**
 
-https://book.getfoundry.sh/
+   ```bash
+   forge test
+   ```
 
-## Usage
+## Contract Overview
 
-### Build
+The `Vote` contract facilitates a basic voting system where candidates can be added, voters can register, and votes can be cast. It includes functionality for starting and stopping an election, checking results, and retrieving voting-related information.
 
-```shell
-$ forge build
-```
+## Variables
 
-### Test
+- **`owner`**: Address of the contract deployer, assumed to be the owner.
+- **`cad_count`**: Counter for candidate IDs.
+- **`voter_count`**: Counter for voter IDs.
+- **`electionStatus`**: A boolean indicating whether an election is ongoing.
+- **`candidateAddress`**: Array holding the addresses of registered candidates.
+- **`candidates`**: Mapping from candidate addresses to their details.
+- **`votedVoters`**: Array holding addresses of voters who have cast their votes.
+- **`votersAddress`**: Array holding addresses of registered voters.
+- **`voters`**: Mapping from voter addresses to their details.
 
-```shell
-$ forge test
-```
+## Events
 
-### Format
+- **`candidateadded`**: Triggered when a new candidate is added.
+- **`VoterAdded`**: Triggered when a new voter is registered.
 
-```shell
-$ forge fmt
-```
+## Constructor
 
-### Gas Snapshots
+The constructor sets the deployer's address as the owner.
 
-```shell
-$ forge snapshot
-```
+## Functions
 
-### Anvil
+### `setCandidate(address _address)`
 
-```shell
-$ anvil
-```
+- **Description**: Adds a new candidate.
+- **Modifiers**: Requires that the caller is the owner.
+- **Error Handling**: Checks if the caller is the owner.
 
-### Deploy
+### `registerUser(address _address)`
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+- **Description**: Registers a new voter.
+- **Error Handling**: Ensures that the voter is not already registered.
 
-### Cast
+### `AddVote(address _cadAddress)`
 
-```shell
-$ cast <subcommand>
-```
+- **Description**: Allows a registered voter to cast a vote for a candidate.
+- **Error Handling**: Checks if the voter is allowed to vote, has not voted before, and the provided candidate address is valid.
 
-### Help
+### `startElection()`
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+- **Description**: Starts the election.
+- **Modifiers**: Requires that the caller is the owner.
+- **Error Handling**: Checks if the caller is the owner and if the election is not already ongoing.
+
+### `stopElection()`
+
+- **Description**: Stops the election.
+- **Modifiers**: Requires that the caller is the owner.
+- **Error Handling**: Checks if the caller is the owner and if the election is ongoing.
+
+### `Result()`
+
+- **Description**: Retrieves the winner after the election has ended.
+- **Error Handling**: Ensures that the election has ended.
+
+### `getTotalVotes(address _address)`
+
+- **Description**: Retrieves the total votes received by a candidate.
+
+### `getVoterVoted(address _address)`
+
+- **Description**: Checks if a voter has cast a vote.
